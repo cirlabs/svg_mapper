@@ -1,0 +1,13 @@
+<pre><code>  #####  #     #  #####     #     #                                    
+ #     # #     # #     #    ##   ##   ##   #####  #####  ###### #####  
+ #       #     # #          # # # #  #  #  #    # #    # #      #    # 
+  #####  #     # #  ####    #  #  # #    # #    # #    # #####  #    # 
+       #  #   #  #     #    #     # ###### #####  #####  #      #####  
+ #     #   # #   #     #    #     # #    # #      #      #      #   #  
+  #####     #     #####     #     # #    # #      #      ###### #    # </code></pre>
+  
+Python code for converting GeoDjango features into 0-referenced SVG strings for vector-based mapping. The code is designed to work with Raphael JS (http://raphaeljs.com) -- because Raphael provides fairly robust VML backup code for legacy Internet Explorer browsers -- but can be used without Raphael as well if you want to use other libraries.
+
+The repository includes a Django project with sample code for a basic layer map with polygon, linestring and point layers.
+
+Coming soon: Example code for coloring a polygon layer with related data and a basic locator map.
