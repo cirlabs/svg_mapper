@@ -1,0 +1,15 @@
+{
+	"viewbox": [{{ viewbox.x }}, {{ viewbox.y }}, {{ viewbox.width }}, {{ viewbox.height }}],
+	"layers":[
+		{% for l in map_layers %}{
+			"layerid":"{{ l.identifier }}",
+			"type":"{{ l.type }}",
+			"geometries": [{% for p in l.geometries %}
+				{
+					"id": "{{ p.id }}",
+					{% if l.type != 'point' %}"svgstring": "{{ p.svgstring }}"{% else %}"svgpoint": {{ p.svgpoint }}{% endif %}
+				}{% if not forloop.last %},{% else %}{% endif %}
+			{% endfor %}]
+		}{% if not forloop.last %},{% else %}{% endif %}{% endfor %}
+	]
+}

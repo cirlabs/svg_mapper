@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Basic layer map</title>
+	<script src="{{ STATIC_URL }}/js/jquery-1.7.1.min.js"></script>
+	<script src="{{ STATIC_URL }}/js/modernizr-1.5.min.js"></script>
+	<script src="{{ STATIC_URL }}/js/raphael-2.0.2-min.js"></script>
+	<script src="{{ STATIC_URL }}/js/basic-layer-map.js"></script>
+
+</head>
+<body>
+
+	<h1>Basic layer map</h1>
+	<figure>
+		<div id="mapcanvas"></div>
+	</figure>
+	
+	<script>
+		$(document).ready(function() {
+	
+			loadMap('mapcanvas');
+		
+		});
+	</script>
+	
+</body>
+</html>
