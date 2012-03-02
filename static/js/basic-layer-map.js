@@ -1,29 +1,24 @@
 var strServerRoot = '/';
 
+//Set your actual desired final width here. The height will be adjusted based on your map layers.
 var numMainMapWidth = 570;
 var numMainMapHeight;
 var numMapHorizPadding = 75;
 var numMapVerticalPadding = 0;
 
+//Used to translate the SVG dimensions to your desired final width/height, and to scale type or other sizes
 var numMainMapScale;
 
+//Used for holding Raphael stuff
 var objMainMap;
 var objMainMapSet = {};
-
 var arrMapSets = [];
 
-var boolMapLoaded = false;
-var boolDataLoaded = false;
-
 var objLoadElements = {};
-//objLoadElements.data = false;
 objLoadElements.mainmap = false;
 
 var objMainMapData = null;
 var arrMainMapViewBox = null;
-var objRelatedData = null;
-
-var strSelectedGeom = null;
 
 function getScaleFactor(numPaperWidth,numViewboxWidth) {
 	var numScaleFactor = numViewboxWidth/numPaperWidth;
@@ -123,15 +118,6 @@ function showDetails(strSlug) {
 
 function loadMap(strTargetCanvas) {
 	
-	$.getJSON(strServerRoot + 'facility/all/json/', function(data) {
-		
-// 		objRelatedData = data;
-// 		objLoadElements.data = true;
-// 		buildMap(strTargetCanvas);
-		
-	});
-
-	
 	$.getJSON(strServerRoot + 'json/map/', function(data) {
 		arrMainMapViewBox = data.viewbox;
 		objMainMapData = data.layers;
@@ -140,5 +126,4 @@ function loadMap(strTargetCanvas) {
 		buildMap(strTargetCanvas);
 	
 	});
-	
  }

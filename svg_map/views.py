@@ -3,66 +3,39 @@ from svg_map.models import Wisconsin, WisconsinCities, WisconsinInterstates
 from svg_map.svgmap import *
 from django.template import RequestContext
 
-def map_json(request):
+def layer_map_json(request):
+    #Collect your GeoDjango objects
     statelist = Wisconsin.objects.all()
     city_list = WisconsinCities.objects.all()
     road_list = WisconsinInterstates.objects.all()
     
     themap = SVGMap()
+    #The width is somewhat arbitrary since this is all vector. If you're using Raphael, you can set whatever width you want at the JS level, so I rarely change this value here.
     themap.mapPixelWidth = 1000
     themap.paddingPct = 0.01
+    #How many digits to round your final points to. This will vary slightly with projection. If you round too low, you'll lose detail. If you don't round at all you're just doing extra math for no reason.
     themap.sigdigs = 4
     
+    #build layers in the order you'd like to display them. You could override this at the JS level if you wanted to.
     #polygon layer
-    themap.buildSVGPolygonSet(statelist, 'simple_mpoly_utm15n', 'state_fips')
-    
+    themap.buildSVGPolygonLayer('wi_border', statelist, 'simple_mpoly_utm15n', 'state_fips')
+
     #polyline layer
-    themap.buildSVGLinestringSet(road_list, 'simple_mpoly_utm15n', 'feature')
+    themap.buildSVGLinestringLayer('wi_roads', road_list, 'simple_mpoly_utm15n', 'feature')
 
     #point layer
-    themap.buildSVGPointSet(city_list, 'geom_utm15n', 'slug')
+    themap.buildSVGPointLayer('wi_cities', city_list, 'geom_utm15n', 'slug')
     
+    #Get the maximum extent of all layers
     viewbox = themap.buildSVGMapViewBox()
-    map_layers = []
-    map_layers.append(SVGPolygonLayer(themap,themap.multipolygons,'wi_border'))
-    map_layers.append(SVGLinestringLayer(themap,themap.multilinestrings,'wi_roads'))
-    map_layers.append(SVGPointLayer(themap,themap.points,'wi_cities'))
+    #Use the map's extent info to translate all the points to fit inside your pixel width specified above.
+    map_layers = themap.translateLayers()
     
     return render_to_response('svg.json', {
         'viewbox': viewbox,
         'map_layers': map_layers,
         },
         context_instance=RequestContext(request))
-
-
-# def locator_map(request, slug):
-#     statelist = USAStates.objects.filter(slug='california')
-#     facility_list = Facility.objects.filter(slug=slug)
-#     
-#     themap = SVGMap()
-#     #themap.mapPixelWidth = 475
-#     themap.mapPixelWidth = 1000
-#     themap.paddingPct = 0.01
-#     themap.sigdigs = 2
-#     
-#     #polygon layer
-#     themap.buildSVGPolygonSet(statelist, 'simple_mpoly_caplane', 'state_fips')
-#     #viewbox = themap.buildSVGMapViewBox()
-#     #print viewbox.x
-#     
-#     #point layer
-#     themap.buildSVGPointSet(facility_list, 'geom_caplane', 'slug')
-#     
-#     viewbox = themap.buildSVGMapViewBox()
-#     multipoly_paths = themap.SVGPolygonSet(themap.multipolygons)
-#     point_paths = themap.SVGPointSet(themap.points)
-#     
-#     return render_to_response('svg.json', {
-#         'viewbox': viewbox,
-#         'svg_multipoly_paths': multipoly_paths,
-#         'svg_point_paths': point_paths,
-#         },
-#         context_instance=RequestContext(request))
         
 def index(request):
     
