@@ -37,6 +37,7 @@ And GeoDjango, of course.
 <h2>Loading sample project cheatsheet</h2>
 There's load scripts in the svg_map app to load up all the data you'll need.
 
+createdb -T template_postgis -O yourusernamehere svg_mapper
 python manage.py syncdb
 python manage.py shell
 
