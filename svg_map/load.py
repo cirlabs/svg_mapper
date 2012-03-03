@@ -11,7 +11,7 @@ wisconsin_mapping = {
     'geom' : 'MULTIPOLYGON',
 }
 
-border_shp = os.path.join('.', 'svg_map/wisconsin/wisconsin.sh')
+border_shp = os.path.join('.', 'svg_map/wisconsin/wisconsin.shp')
 
 def run_wisconsin(verbose=True):
     lm = LayerMapping(Wisconsin, border_shp, wisconsin_mapping,
@@ -138,3 +138,12 @@ def load_wisconsin_related_data():
         except:
             raise
 
+def load_all_sample_data():
+    run_wisconsin()
+    update_simple_polys()
+    run_roads()
+    update_simple_roads()
+    run_cities()
+    run_wisconsin_counties()
+    update_simple_county_polys()
+    load_wisconsin_related_data()

@@ -8,6 +8,14 @@
   
 Python code for converting GeoDjango features into 0-referenced SVG strings for vector-based mapping. The code is designed to work with Raphael JS (http://raphaeljs.com) -- because Raphael provides fairly robust VML backup code for legacy Internet Explorer browsers -- but can be used without Raphael as well if you want to use other libraries.
 
+<h2>Why not tiles?</h2>
+
+TileMill is awesome, but there's plenty of times you don't need tiles -- they're extra overhead, programming, storage and cost if all you want is a simple thematic map.
+
+<h2>Why SVG?</h2>
+
+&lt;canvas/&gt; can do a most or all of the same visual work, but SVG is DOM, which means you can style it with CSS, access its elements with Javascript, and it's just more real to me than &lt;canvas/&gt;. And if you use Raphael JS (http://raphaeljs.com), you've got pretty darn good legacy Internet Explorer backup without writing additional code. (There's always exceptions, especially when you start adding fonts, but Raphael has good methods for dealing with this intelligently.)
+
 The repository includes a Django project with sample code for two examples: a basic layer map with polygon, linestring and point layers; and a choropleth map that connects with related data in a separate JSON file.
 
 A few working examples of slightly older versions of the svg_map.py code:
@@ -17,3 +25,35 @@ http://projects.cironline.org/police-grants
 
 (A statewide California map and smaller locator maps on inside pages)
 http://projects.californiawatch.org/broken-shield
+
+This sample project requires:
+
+yolk
+psycopg2==2.4.2
+django==1.3.1
+
+And GeoDjango, of course.
+
+<h2>Loading sample project cheatsheet</h2>
+There's load scripts in the svg_map app to load up all the data you'll need.
+
+python manage.py syncdb
+python manage.py shell
+
+In shell:
+from svg_map.load import *
+load_all_sample_data()
+
+That should load up several shapefiles and a related CSV for the examples.
+
+Then you can run your test server:
+
+python manage.py runserver
+
+And find the examples here:
+
+Basic layer map example:
+http://127.0.0.1:8000
+
+Choropleth map example:
+http://127.0.0.1:8000/choropleth
