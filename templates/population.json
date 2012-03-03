@@ -1,0 +1,12 @@
+{
+	"counties":[
+		{% for c in county_list %}{
+			"id":"{{ c.countyfps }}",
+			"name":"{{ c.name }}",
+			"pop2010":{{ c.pop_2010 }},
+			"pop2000":{{ c.pop_2000 }},
+			"popchange":{{ c.pop_change }},
+			"poppctchange":{{ c.pop_pct_change }}
+		}{% if not forloop.last %},{% else %}{% endif %}{% endfor %}
+	]
+}

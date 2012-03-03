@@ -118,7 +118,7 @@ function showDetails(strSlug) {
 
 function loadMap(strTargetCanvas) {
 	
-	$.getJSON(strServerRoot + 'json/map/', function(data) {
+	$.getJSON(strServerRoot + 'json/layer-map/', function(data) {
 		arrMainMapViewBox = data.viewbox;
 		objMainMapData = data.layers;
 				

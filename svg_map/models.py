@@ -59,7 +59,7 @@ class Wisconsin(models.Model):
         self.save()
         return True
         
-class WisconsinInterstates(models.Model):
+class WisconsinInterstate(models.Model):
     feature = models.CharField(max_length=80)
     route = models.CharField(max_length=120)
     state_fips = models.CharField(max_length=2)
@@ -117,7 +117,7 @@ class WisconsinInterstates(models.Model):
         return True
         
         
-class WisconsinCities(models.Model):
+class WisconsinCity(models.Model):
     statefp10 = models.CharField(max_length=2)
     placefp10 = models.CharField(max_length=5)
     placens10 = models.CharField(max_length=8)
@@ -144,6 +144,99 @@ class WisconsinCities(models.Model):
         self.geom_utm15n = self.geom.transform(26915, True)
         
         super(self.__class__, self).save(**kwargs)
+
+    def __unicode__(self):
+        return self.slug
+        
+class WisconsinCounty(models.Model):
+    statefp10 = models.CharField(max_length=2)
+    countyfp10 = models.CharField(max_length=3)
+    countyns10 = models.CharField(max_length=8)
+    geoid10 = models.CharField(max_length=5)
+    name10 = models.CharField(max_length=100)
+    namelsad10 = models.CharField(max_length=100)
+    lsad10 = models.CharField(max_length=2)
+    classfp10 = models.CharField(max_length=2)
+    mtfcc10 = models.CharField(max_length=5)
+    csafp10 = models.CharField(max_length=3)
+    cbsafp10 = models.CharField(max_length=5)
+    metdivfp10 = models.CharField(max_length=5)
+    funcstat10 = models.CharField(max_length=1)
+    aland10 = models.FloatField()
+    awater10 = models.FloatField()
+    intptlat10 = models.CharField(max_length=11)
+    intptlon10 = models.CharField(max_length=12)
+    geom = models.MultiPolygonField(srid=4269)
+    simple_mpoly_utm15n = models.MultiPolygonField(srid=26915, null=True)
+    slug = models.SlugField(blank=True)
+    objects = models.GeoManager()
+
+    def save(self, **kwargs):
+        self.slug = slugify(self.name10)
+        #self.internal_point = fromstr('POINT(%s %s)' % (self.lon_internal_point, self.lat_internal_point.replace('+', '')))
+        if self.geom and isinstance(self.geom, geos.Polygon):
+            self.geom = geos.MultiPolygon(self.geom)
+            
+        super(self.__class__, self).save(**kwargs)
+
+    def __unicode__(self):
+        return self.slug
+    
+    def set_simple_polygons(self, target_field_name='simple_mpoly', tolerance=2, srid=4326):
+        """
+        Ben Welsh method
+        
+        Simplifies the source polygons so they don't use so many points.
+        
+        Provide a tolerance score the indicates how sharply the
+        the lines should be redrawn.
+        
+        Returns True if successful.
+        """
+
+        # Fetch the source polygon
+        source_field_name = 'geom'
+        source = getattr(self, source_field_name)
+        # Fetch the target polygon where the result will be saved
+        #target_field_name = 'simple_mpoly'
+        target = getattr(self, target_field_name)
+        # Simplify the source
+        simple = source.transform(srid, True).simplify(tolerance, True)
+        # If it's a polygon, convert it to a MultiPolygon
+        if simple.geom_type == 'Polygon':
+            mp = OGRGeometry(OGRGeomType('MultiPolygon'))
+            mp.add(simple.wkt)
+            target = mp.wkt
+        # Otherwise just save out right away
+        else:
+            target = simple.wkt
+            
+        # Set the attribute
+        setattr(self, target_field_name, target)
+        
+        # Save out
+        self.save()
+        return True
+
+class WisconsinCountyData(models.Model):
+    geoid = models.CharField(max_length=20)
+    statefps = models.IntegerField(max_length=2)
+    countyfps = models.IntegerField(max_length=3)
+    name = models.CharField(max_length=100)
+    pop_2010 = models.IntegerField(max_length=10)
+    pop_2000 = models.IntegerField(max_length=10)
+    slug = models.SlugField(blank=True)
+
+    def save(self, **kwargs):
+        self.slug = slugify(self.name)
+        super(self.__class__, self).save(**kwargs)
+        
+    def pop_change(self):
+        return self.pop_2010 - self.pop_2000
+        
+    def pop_pct_change(self):
+        pct_change = round(float((self.pop_2010 - self.pop_2000))/float(self.pop_2010),3)
+        return pct_change
 
     def __unicode__(self):
         return self.slug

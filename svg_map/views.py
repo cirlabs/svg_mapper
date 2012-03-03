@@ -1,13 +1,20 @@
 from django.shortcuts import get_object_or_404, Http404, render_to_response
-from svg_map.models import Wisconsin, WisconsinCities, WisconsinInterstates
+from svg_map.models import Wisconsin, WisconsinCity, WisconsinInterstate, WisconsinCounty, WisconsinCountyData
 from svg_map.svgmap import *
 from django.template import RequestContext
 
+def index(request):
+    
+    return render_to_response('basiclayermap.html', {
+        },
+        context_instance=RequestContext(request))
+
+#### view for layer map example ####
 def layer_map_json(request):
     #Collect your GeoDjango objects
     statelist = Wisconsin.objects.all()
-    city_list = WisconsinCities.objects.all()
-    road_list = WisconsinInterstates.objects.all()
+    city_list = WisconsinCity.objects.all()
+    road_list = WisconsinInterstate.objects.all()
     
     themap = SVGMap()
     #The width is somewhat arbitrary since this is all vector. If you're using Raphael, you can set whatever width you want at the JS level, so I rarely change this value here.
@@ -37,8 +44,37 @@ def layer_map_json(request):
         },
         context_instance=RequestContext(request))
         
-def index(request):
+#### Views for choropleth example ####
+
+def choropleth_map_json(request):
+    statelist = WisconsinCounty.objects.all()
     
-    return render_to_response('basiclayermap.html', {
+    themap = SVGMap()
+    themap.mapPixelWidth = 1000
+    themap.paddingPct = 0.01
+    themap.sigdigs = 4
+    
+    themap.buildSVGPolygonLayer('wi_counties', statelist, 'simple_mpoly_utm15n', 'countyfp10')
+    
+    viewbox = themap.buildSVGMapViewBox()
+    map_layers = themap.translateLayers()
+    
+    return render_to_response('svg.json', {
+        'viewbox': viewbox,
+        'map_layers': map_layers,
+        },
+        context_instance=RequestContext(request))
+
+def related_data_json(request):
+    county_list = WisconsinCountyData.objects.all()
+
+    return render_to_response('population.json', {
+        'county_list': county_list,
+        },
+        context_instance=RequestContext(request))
+
+def choropleth_html(request):
+    
+    return render_to_response('choropleth.html', {
         },
         context_instance=RequestContext(request))

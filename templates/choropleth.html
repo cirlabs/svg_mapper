@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Basic layer map</title>
+	<title>choropleth map</title>
 	<script src="{{ STATIC_URL }}/js/jquery-1.7.1.min.js"></script>
 	<script src="{{ STATIC_URL }}/js/modernizr-1.5.min.js"></script>
 	<script src="{{ STATIC_URL }}/js/raphael-2.0.2-min.js"></script>
-	<script src="{{ STATIC_URL }}/js/basic-layer-map.js"></script>
+	<script src="{{ STATIC_URL }}/js/choropleth-map.js"></script>
 
 </head>
 <body>
 
-	<h1>Basic layer map</h1>
-	<p><a href="{% url choropleth_html %}">Choropleth map example</a></p>
+	<h1>choropleth map: WI population change, 2000-2010</h1>
+	<p><a href="{% url index %}">Basic layer map example</a></p>
 	<figure>
 		<div id="mapcanvas"></div>
 	</figure>

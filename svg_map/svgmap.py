@@ -44,19 +44,19 @@ class SVGMap:
                     self.updateGeoBounds(point.arrGeometry)
             
             if l['type'] == 'multipolygon':
-				for multipolygon in l['multi_set']:
-					for polygon in multipolygon.rings:
-						for key in range(len(polygon.arrGeometry)):
-							point = polygon.arrGeometry[key]
-							if key != len(polygon.arrGeometry)-1:
-								self.updateGeoBounds(point)
-								
+                for multipolygon in l['multi_set']:
+                    for polygon in multipolygon.rings:
+                        for key in range(len(polygon.arrGeometry)):
+                            point = polygon.arrGeometry[key]
+                            if key != len(polygon.arrGeometry)-1:
+                                self.updateGeoBounds(point)
+                                
             if l['type'] == 'multilinestring':
-				for multilinestring in l['multi_set']:
-					for linestring in multilinestring.rings:
-						for key in range(len(linestring.arrGeometry)):
-							point = linestring.arrGeometry[key]
-							self.updateGeoBounds(point)
+                for multilinestring in l['multi_set']:
+                    for linestring in multilinestring.rings:
+                        for key in range(len(linestring.arrGeometry)):
+                            point = linestring.arrGeometry[key]
+                            self.updateGeoBounds(point)
                         
         self.scaleFactor = self.mapPixelWidth/self.mapGeoWidth
         self.pixelPadding = self.mapPixelWidth*self.paddingPct
