@@ -70,7 +70,7 @@ function buildMap(strTargetCanvas) {
 				//Multilinestring layer style
 				var objLineAttr = {
 					"stroke": "#999",
-					"stroke-width": 1*numMainMapScale
+					"stroke-width": 3
 				};			
 				
 				$.each(objLayer.geometries, function(numGeomKey, objGeom) {
@@ -96,9 +96,9 @@ function buildMap(strTargetCanvas) {
 				
 				$.each(objLayer.geometries, function(numGeomKey, objGeom) {
 		
-					objMainMapSet[objGeom.id] = objMainMap.circle(objGeom.svgpoint[0], objGeom.svgpoint[1], 8*numMainMapScale).attr(objCircleAttr)
+					objMainMapSet[objGeom.id] = objMainMap.circle(objGeom.svgpoint[0], objGeom.svgpoint[1], 15).attr(objCircleAttr)
 						.data('slug',objGeom.id)
-						.mouseover(function () {
+						.click(function () {
 							showDetails(objGeom.id);
 						});			
 				});		

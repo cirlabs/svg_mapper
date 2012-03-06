@@ -66,7 +66,7 @@ function buildMap(strTargetCanvas) {
  		for (numQ=0; numQ<numQuantiles; numQ++){
  			arrQuantileMins.push(numDataMin + (numQ*numQuantileInterval));
  		}
- 		var arrFills = ['#EEE', '#DDD', '#CCC', '#AAA', '#999', '#777', '#666', '#333'];
+ 		var arrFills = ['#FFF7FB', '#ECE7F2', '#D0D1E6', '#A6BDDB', '#74A9CF', '#3690C0', '#0570B0', '#034E7B'];
 		
 		$.each(objMainMapData, function(numLayerKey, objLayer) {
 
